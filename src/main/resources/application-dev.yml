@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: dev
+
+aws:
+  dynamodb:
+    endpoint: https://dynamodb.us-east-1.amazonaws.com
+
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false

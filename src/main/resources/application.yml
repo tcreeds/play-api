@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: local
+
+aws:
+  dynamodb:
+    endpoint: http://localhost:8010
+
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false
+security.basic.enabled: false
+management.security.enabled: false
