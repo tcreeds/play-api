@@ -12,6 +12,7 @@ object SecurityUtils {
     const val HEADER_STRING = "Authorization"
     const val SIGN_UP_URL = "/users/newuser"
     const val LOGIN_URL = "/users/login"
+    const val VERIFY_URL = "/users/verifyemail"
 
     fun generateToken(username: String): String{
         return Jwts.builder()
