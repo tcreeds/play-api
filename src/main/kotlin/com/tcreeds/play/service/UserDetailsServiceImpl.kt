@@ -1,6 +1,6 @@
 package com.tcreeds.play.service
 
-import com.tcreeds.play.repository.UserDataRepository
+import com.tcreeds.play.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User
 import java.util.Collections.emptyList
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserDetailsServiceImpl(
         @Autowired
-        private val repository: UserDataRepository
+        private val repository: UserRepository
 ) : UserDetailsService {
 
     @Throws(UsernameNotFoundException::class)

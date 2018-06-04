@@ -1,9 +1,16 @@
 spring:
   profiles:
     active: dev
-
-aws:
-  dynamodb:
-    endpoint: https://dynamodb.us-east-1.amazonaws.com
+  datasource:
+    url: jdbc:postgresql://tak-api-dev.c5gvnnjtn249.us-east-1.rds.amazonaws.com/takapi
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driverClassName: org.postgresql.Driver
+  jpa:
+    generate-ddl: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    enabled: true
+    change-log: classpath:/liquibase-changelog.xml
 
 spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false

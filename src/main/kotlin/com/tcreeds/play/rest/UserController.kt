@@ -29,7 +29,7 @@ class UserController(
         if (success)
             res.addHeader(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX + SecurityUtils.generateToken(resource.email))
         else
-            res.sendError(409)
+            res.sendError(400)
     }
 
     @PostMapping(value="/login")

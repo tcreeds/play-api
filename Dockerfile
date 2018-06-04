@@ -1,7 +1,7 @@
 FROM zenika/alpine-kotlin
 
-WORKDIR ~/projects/tak-api
+WORKDIR ~/projects/play-api
 
-COPY target/tak-api-0.0.1-SNAPSHOT.jar .
+COPY target/play-api-0.0.1-SNAPSHOT.jar .
 
-CMD ["java","-jar","tak-api-0.0.1-SNAPSHOT.jar"]
+CMD ["java","-jar","play-api-0.0.1-SNAPSHOT.jar"]
