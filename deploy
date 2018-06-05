@@ -3,4 +3,4 @@ eval "$(aws ecr get-login --no-include-email --region us-east-1)"
 docker build -t play-api .
 docker tag play-api:latest 175262026713.dkr.ecr.us-east-1.amazonaws.com/play-api:latest
 docker push 175262026713.dkr.ecr.us-east-1.amazonaws.com/play-api:latest
-aws ecs update-service --service play-api-dev --force-new-deployment
+aws ecs update-service --cluster tcreeds-io --service play-api-dev --force-new-deployment
