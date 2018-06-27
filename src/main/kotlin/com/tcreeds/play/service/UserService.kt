@@ -25,19 +25,7 @@ class UserService(
         if (repository.findByEmail(resource.email) == null) {
             val verificationId: String = UUID.randomUUID().toString()
             repository.save(UserEntity(email = resource.email, verificationId = verificationId))
-            val request: SendEmailRequest = SendEmailRequest()
-                    .withDestination(Destination(listOf(resource.email)))
-                    .withSource("no-reply@tcreeds.io")
-                    .withMessage(Message()
-                            .withBody(Body()
-                                    .withHtml(Content()
-                                            .withCharset("UTF-8").withData("https://play.tcreeds.io/verify/$verificationId"))
-                                    .withText(Content()
-                                            .withCharset("UTF-8").withData(verificationId)))
-                            .withSubject(Content()
-                                    .withCharset("UTF-8").withData("Play Account Verification")))
-            amazonSES.sendEmail(request)
-
+            sendEmail(resource.email, "Play Account Verification", "https://play.tcreeds.io/verify/$verificationId")
             return true
         }
         return false
@@ -47,6 +35,8 @@ class UserService(
         val user: UserEntity? = repository.findByVerificationId(resource.verificationId)
         if (user != null && !UserEntity.isVerifiedUser(user)){
             user.password = bCryptPasswordEncoder.encode(resource.password)
+            user.verificationId = ""
+            user.verified = true
             repository.save(user)
             return true
         }
@@ -58,5 +48,42 @@ class UserService(
         if (userDataEntity != null && UserEntity.isVerifiedUser(userDataEntity) && bCryptPasswordEncoder.matches(resource.password, userDataEntity.password))
             return true
         return false
+    }
+
+    fun sendResetPasswordEmail(resource: UserResource): Boolean {
+        val userDataEntity: UserEntity? = repository.findByEmail(resource.email)
+        if (userDataEntity != null && UserEntity.isVerifiedUser(userDataEntity)){
+            val verificationId: String = UUID.randomUUID().toString()
+            userDataEntity.verificationId = verificationId
+            repository.save(userDataEntity)
+            sendEmail(resource.email, "Play Password Reset", "https://play.tcreeds.io/resetpassword/$verificationId")
+        }
+        return true
+    }
+
+    fun resetPassword(resource: UserResource): Boolean{
+        val user: UserEntity? = repository.findByVerificationId(resource.verificationId)
+        if (user != null){
+            user.password = bCryptPasswordEncoder.encode(resource.password)
+            user.verificationId = ""
+            repository.save(user)
+            return true
+        }
+        return false
+    }
+
+    fun sendEmail(destination: String, subject: String, body: String) {
+        val request: SendEmailRequest = SendEmailRequest()
+                .withDestination(Destination(listOf(destination)))
+                .withSource("no-reply@tcreeds.io")
+                .withMessage(Message()
+                        .withBody(Body()
+                                .withHtml(Content()
+                                        .withCharset("UTF-8").withData(body))
+                                .withText(Content()
+                                        .withCharset("UTF-8").withData(body)))
+                        .withSubject(Content()
+                                .withCharset("UTF-8").withData(subject)))
+        amazonSES.sendEmail(request)
     }
 }

@@ -18,6 +18,9 @@ data class UserEntity (
         var verificationId: String = "",
 
         @Column
+        var verified: Boolean = false,
+
+        @Column
         var password: String = "",
 
         @ManyToMany
@@ -26,7 +29,7 @@ data class UserEntity (
 ) {
     companion object {
         fun isVerifiedUser(userDataEntity: UserEntity): Boolean {
-            return userDataEntity.password != ""
+            return userDataEntity.verified
         }
     }
 }

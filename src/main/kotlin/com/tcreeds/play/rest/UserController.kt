@@ -18,7 +18,7 @@ class UserController(
     fun newUser(@Valid @RequestBody resource: UserResource, res: HttpServletResponse) {
         val success = userService.createUser(resource)
         if (success)
-            res.addHeader(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX + SecurityUtils.generateToken(resource.email))
+            generateTokenHeader(res, resource.email)
         else
             res.sendError(409)
     }
@@ -27,7 +27,7 @@ class UserController(
     fun verifyEmail(@Valid @RequestBody resource: UserResource, res: HttpServletResponse) {
         val success = userService.verifyUser(resource)
         if (success)
-            res.addHeader(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX + SecurityUtils.generateToken(resource.email))
+            generateTokenHeader(res, resource.email)
         else
             res.sendError(400)
     }
@@ -35,8 +35,27 @@ class UserController(
     @PostMapping(value="/login")
     fun login(@Valid @RequestBody resource: UserResource, res: HttpServletResponse){
         if (userService.checkLogin(resource))
-            res.addHeader(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX + SecurityUtils.generateToken(resource.email))
+            generateTokenHeader(res, resource.email)
         else
             res.sendError(401)
+    }
+
+    @PostMapping(value="/generateresetcode")
+    fun resetPasswordEmail(@Valid @RequestBody resource: UserResource, res: HttpServletResponse) {
+        if (!userService.sendResetPasswordEmail(resource))
+            res.sendError(400)
+    }
+
+    @PostMapping(value="/resetpassword")
+    fun resetPassword(@Valid @RequestBody resource: UserResource, res: HttpServletResponse) {
+        if (userService.resetPassword(resource))
+            generateTokenHeader(res, resource.email)
+        else
+            res.sendError(400)
+
+    }
+
+    private fun generateTokenHeader(res: HttpServletResponse, email: String) {
+        res.addHeader(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX + SecurityUtils.generateToken(email))
     }
 }
