@@ -5,6 +5,8 @@ import com.tcreeds.play.rest.JWTAuthorizationFilter
 import com.tcreeds.play.rest.SecurityUtils.HEADER_STRING
 import com.tcreeds.play.rest.SecurityUtils.SIGN_UP_URL
 import com.tcreeds.play.rest.SecurityUtils.LOGIN_URL
+import com.tcreeds.play.rest.SecurityUtils.RESET_PASSWORD_URL
+import com.tcreeds.play.rest.SecurityUtils.SEND_RESET_URL
 import com.tcreeds.play.rest.SecurityUtils.VERIFY_URL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -30,7 +32,7 @@ open class WebSecurity(
 
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, SIGN_UP_URL, LOGIN_URL, VERIFY_URL).permitAll()
+                .antMatchers(HttpMethod.POST, SIGN_UP_URL, LOGIN_URL, VERIFY_URL, SEND_RESET_URL, RESET_PASSWORD_URL).permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
