@@ -7,10 +7,10 @@ spring:
     password: postgres
     driverClassName: org.postgresql.Driver
   jpa:
-    generate-ddl: true
+    generate-ddl: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
-    enabled: false
+    enabled: true
     change-log: classpath:/liquibase-changelog.xml
 
 server:

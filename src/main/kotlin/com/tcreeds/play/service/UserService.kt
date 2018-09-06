@@ -57,8 +57,9 @@ class UserService(
             userDataEntity.verificationId = verificationId
             repository.save(userDataEntity)
             sendEmail(resource.email, "Play Password Reset", "https://play.tcreeds.io/resetpassword/$verificationId")
+            return true
         }
-        return true
+        return false
     }
 
     fun resetPassword(resource: UserResource): Boolean{
@@ -85,5 +86,9 @@ class UserService(
                         .withSubject(Content()
                                 .withCharset("UTF-8").withData(subject)))
         amazonSES.sendEmail(request)
+    }
+
+    fun mockUser(name: String, password: String) {
+        repository.save(UserEntity(email = name, password = bCryptPasswordEncoder.encode(password), verified = true))
     }
 }

@@ -33,6 +33,7 @@ open class WebSecurity(
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL, LOGIN_URL, VERIFY_URL, SEND_RESET_URL, RESET_PASSWORD_URL).permitAll()
+                .antMatchers("/users/mockAccount").permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

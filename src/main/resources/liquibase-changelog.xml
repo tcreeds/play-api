@@ -1,9 +1,9 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet author="trevorcreed (generated)" id="1528302111924-1">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-1">
         <createSequence sequenceName="hibernate_sequence"/>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1528302111924-2">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-2">
         <createTable tableName="communities">
             <column name="community_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -12,7 +12,7 @@
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1528302111924-3">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-3">
         <createTable tableName="users">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -20,9 +20,10 @@
             <column name="email" type="VARCHAR(255)"/>
             <column name="password" type="VARCHAR(255)"/>
             <column name="verification_id" type="VARCHAR(255)"/>
+            <column name="verified" type="BOOLEAN"/>
         </createTable>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1528302111924-4">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-4">
         <createTable tableName="users_communities">
             <column name="members_user_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -32,22 +33,22 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1528302111924-5">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-5">
         <addPrimaryKey columnNames="community_id" constraintName="communities_pkey" tableName="communities"/>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1528302111924-6">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-6">
         <addPrimaryKey columnNames="user_id" constraintName="users_pkey" tableName="users"/>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1528302111924-7">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-7">
         <addUniqueConstraint columnNames="email" constraintName="uk_6dotkott2kjsp8vw4d0m25fb7" tableName="users"/>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1528302111924-8">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-8">
         <addUniqueConstraint columnNames="verification_id" constraintName="uk_h49m1dm49r52jylluqtvg1fho" tableName="users"/>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1528302111924-9">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-9">
         <addForeignKeyConstraint baseColumnNames="members_user_id" baseTableName="users_communities" constraintName="fk2eachves9ee6ngxync4u89r3m" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="users"/>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1528302111924-10">
+    <changeSet author="trevorcreed (generated)" id="1530497307043-10">
         <addForeignKeyConstraint baseColumnNames="communities_community_id" baseTableName="users_communities" constraintName="fk6tujvphptfocmm98d3s0qdkta" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="community_id" referencedTableName="communities"/>
     </changeSet>
 </databaseChangeLog>

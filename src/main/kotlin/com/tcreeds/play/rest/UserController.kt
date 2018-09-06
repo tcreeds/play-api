@@ -55,6 +55,11 @@ class UserController(
 
     }
 
+    @PostMapping(value="/mockAccount")
+    fun mockAccount() {
+        userService.mockUser("test", "test")
+    }
+
     private fun generateTokenHeader(res: HttpServletResponse, email: String) {
         res.addHeader(SecurityUtils.HEADER_STRING, SecurityUtils.TOKEN_PREFIX + SecurityUtils.generateToken(email))
     }

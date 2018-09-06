@@ -1,6 +1,7 @@
 package com.tcreeds.play.repository.entity
 
 import javax.persistence.*
+import javax.validation.constraints.NotNull
 
 
 @Entity
@@ -18,7 +19,7 @@ data class UserEntity (
         var verificationId: String = "",
 
         @Column
-        var verified: Boolean = false,
+        var verified: Boolean? = false,
 
         @Column
         var password: String = "",
@@ -29,7 +30,7 @@ data class UserEntity (
 ) {
     companion object {
         fun isVerifiedUser(userDataEntity: UserEntity): Boolean {
-            return userDataEntity.verified
+            return userDataEntity.verified ?: false
         }
     }
 }
