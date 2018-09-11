@@ -39,7 +39,7 @@ class CommunityService(
     fun addMember(userId: Long, communityId: Long): Boolean {
         val user: UserEntity? = userRepository.findByUserId(userId)
         val community: CommunityEntity? = communityRepository.findByCommunityId(communityId)
-        if (user != null && UserEntity.isVerifiedUser(user) && community != null){
+        if (user != null && community != null){
             community.members.add(user)
             communityRepository.save(community)
             return true
@@ -50,7 +50,7 @@ class CommunityService(
     fun addMember(email: String, communityId: Long): Boolean {
         val user: UserEntity? = userRepository.findByEmail(email)
         val community: CommunityEntity? = communityRepository.findByCommunityId(communityId)
-        if (user != null && UserEntity.isVerifiedUser(user) && community != null){
+        if (user != null && community != null){
             community.members.add(user)
             communityRepository.save(community)
             return true

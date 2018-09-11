@@ -9,13 +9,7 @@ data class UserResource(
         val id: Long = 0,
 
         @JsonProperty
-        val email: String = "",
-
-        @JsonProperty
-        val password: String = "",
-
-        @JsonProperty
-        val verificationId: String = ""
+        val email: String = ""
 ) {
         companion object {
             fun fromEntity(entity: UserEntity): UserResource{
