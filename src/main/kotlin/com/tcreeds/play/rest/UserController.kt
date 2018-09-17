@@ -46,7 +46,7 @@ class UserController(
         if (result != ResultMessage.SENT_VERIFICATION_EMAIL)
             generateTokenHeader(res, resource.email)
         else
-            res.sendError(400, result.toString())
+            res.sendError(400, result.message)
     }
 
     @PostMapping(value="/verifyemail")
@@ -55,7 +55,7 @@ class UserController(
         if (result == ResultMessage.VERIFIED_USER)
             generateTokenHeader(res, resource.email)
         else
-            res.sendError(400, result.toString())
+            res.sendError(400, result.message)
     }
 
     @PostMapping(value="/login")
@@ -64,14 +64,14 @@ class UserController(
         if (result == ResultMessage.LOGIN_SUCCESS)
             generateTokenHeader(res, resource.email)
         else
-            res.sendError(401, result.toString())
+            res.sendError(401, result.message)
     }
 
     @PostMapping(value="/generateresetcode")
     fun resetPasswordEmail(@Valid @RequestBody resource: UserResource, res: HttpServletResponse) {
         val result = userService.sendResetPasswordEmail(resource)
         if (result != ResultMessage.SENT_PASSWORD_RESET_EMAIL)
-            res.sendError(400, result.toString())
+            res.sendError(400, result.message)
     }
 
     @PostMapping(value="/resetpassword")
@@ -80,7 +80,7 @@ class UserController(
         if (result == ResultMessage.PASSWORD_RESET_SUCCESSFUL)
             generateTokenHeader(res, resource.email)
         else
-            res.sendError(400, result.toString())
+            res.sendError(400, result.messageg)
 
     }
 
