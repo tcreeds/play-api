@@ -9,6 +9,7 @@ data class CommunityEntity (
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE)
+        @Column(name="community_id")
         val communityId: Long = 0,
 
         @Column
@@ -21,8 +22,4 @@ data class CommunityEntity (
         @ManyToMany(mappedBy = "communities")
         var members: MutableList<UserEntity> = mutableListOf()
 
-) {
-    companion object {
-
-    }
-}
+)

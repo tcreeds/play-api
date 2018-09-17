@@ -18,7 +18,7 @@ import com.tcreeds.play.rest.SecurityUtils.TOKEN_PREFIX
 import com.tcreeds.play.rest.resources.LoginResource
 
 
-class JWTAuthFilter(
+class JWTAuthenticationFilter(
         @Autowired
         authenticationManager: AuthenticationManager
 ) : UsernamePasswordAuthenticationFilter() {

@@ -10,12 +10,13 @@ data class UnverifiedUserEntity (
 
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE)
+        @Column(name="user_id")
         var userId: Long = 0,
 
         @Column(unique = true)
         var email: String,
 
-        @Column(unique = true)
+        @Column(unique = true, name="verification_id")
         var verificationId: String,
 
         @Column

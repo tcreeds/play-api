@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UnverifiedUserRepository : CrudRepository<UnverifiedUserEntity, Long> {
     fun findByVerificationId(verificationId: String): UnverifiedUserEntity?
-    fun findByEmail(email: String): UserEntity?
+    fun findByEmail(email: String): UnverifiedUserEntity?
 }

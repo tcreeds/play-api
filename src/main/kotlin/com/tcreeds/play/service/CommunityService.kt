@@ -26,9 +26,10 @@ class CommunityService(
         val entity: CommunityEntity = CommunityEntity(name = name, description = description)
         val savedEntity = communityRepository.save(entity)
         val user = userRepository.findByEmail(email)
-        user?.communities?.add(entity)
-        userRepository.save(user)
-
+        if (user != null){
+            user.communities.add(entity)
+            userRepository.save(user)
+        }
         return savedEntity
     }
 

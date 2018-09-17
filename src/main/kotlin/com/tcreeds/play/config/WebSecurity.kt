@@ -1,6 +1,6 @@
 package com.tcreeds.play.config
 
-import com.tcreeds.play.rest.JWTAuthFilter
+import com.tcreeds.play.rest.JWTAuthenticationFilter
 import com.tcreeds.play.rest.JWTAuthorizationFilter
 import com.tcreeds.play.rest.SecurityUtils.HEADER_STRING
 import com.tcreeds.play.rest.SecurityUtils.SIGN_UP_URL
@@ -25,7 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
-open class WebSecurity(
+class WebSecurity(
         @Autowired
         var userDetailsService: UserDetailsService
 ) : WebSecurityConfigurerAdapter() {
@@ -35,9 +35,10 @@ open class WebSecurity(
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL, LOGIN_URL, VERIFY_URL, SEND_RESET_URL, RESET_PASSWORD_URL).permitAll()
                 .antMatchers("/users/mockAccount").permitAll()
                 .antMatchers("/actuator/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(JWTAuthFilter(authenticationManager()))
+                .addFilter(JWTAuthenticationFilter(authenticationManager()))
                 .addFilter(JWTAuthorizationFilter(authenticationManager()))
                 // this disables session creation on Spring Security
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -48,7 +49,7 @@ open class WebSecurity(
     }
 
     @Bean
-    open fun corsConfigurationSource(): CorsConfigurationSource {
+    fun corsConfigurationSource(): CorsConfigurationSource {
         val cors: CorsConfiguration = CorsConfiguration()
         cors.applyPermitDefaultValues()
         cors.addAllowedOrigin("*")

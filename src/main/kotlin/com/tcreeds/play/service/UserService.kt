@@ -51,7 +51,7 @@ class UserService(
             }
             else {
                 val verificationId: String = UUID.randomUUID().toString()
-                sendEmail(resource.email, "Play Account Verification", "https://play.tcreeds.io/verify/$verificationId")
+                sendEmail(resource.email, "Play Account Verification", "https://play.tcreeds.io/verify/?email=${resource.email}&verificationId=$verificationId")
                 unverifiedUserRepository.save(UnverifiedUserEntity(
                         userId = unverifiedUser.userId,
                         email = unverifiedUser.email,
