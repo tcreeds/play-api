@@ -39,23 +39,20 @@ class UserService(
     fun createUser(resource: LoginResource): ResultMessage {
         if (userRepository.findByEmail(resource.email) == null) {
             val unverifiedUser = unverifiedUserRepository.findByEmail(resource.email)
+            val verificationId: String = UUID.randomUUID().toString()
+            sendEmail(resource.email, "Play Account Verification", "https://play.tcreeds.io/verify/?email=${resource.email}&verificationId=$verificationId")
             if (unverifiedUser == null){
-                val verificationId: String = UUID.randomUUID().toString()
-
-                sendEmail(resource.email, "Play Account Verification", "https://play.tcreeds.io/verify/$verificationId")
                 unverifiedUserRepository.save(UnverifiedUserEntity(
                         email = resource.email,
-                        password = resource.password,
+                        password = bCryptPasswordEncoder.encode(resource.password),
                         verificationId = verificationId))
                 return ResultMessage.SENT_VERIFICATION_EMAIL
             }
             else {
-                val verificationId: String = UUID.randomUUID().toString()
-                sendEmail(resource.email, "Play Account Verification", "https://play.tcreeds.io/verify/?email=${resource.email}&verificationId=$verificationId")
                 unverifiedUserRepository.save(UnverifiedUserEntity(
                         userId = unverifiedUser.userId,
                         email = unverifiedUser.email,
-                        password = unverifiedUser.password,
+                        password = bCryptPasswordEncoder.encode(unverifiedUser.password),
                         verificationId = verificationId))
                 return ResultMessage.RESEND_VERIFICATION_EMAIL
             }

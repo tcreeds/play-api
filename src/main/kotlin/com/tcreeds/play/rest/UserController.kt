@@ -43,7 +43,7 @@ class UserController(
     @PostMapping(value="/newuser")
     fun newUser(@Valid @RequestBody resource: LoginResource, res: HttpServletResponse) {
         val result = userService.createUser(resource)
-        if (result != ResultMessage.SENT_VERIFICATION_EMAIL)
+        if (result != ResultMessage.EMAIL_IN_USE)
             generateTokenHeader(res, resource.email)
         else
             res.sendError(400, result.message)
@@ -80,7 +80,7 @@ class UserController(
         if (result == ResultMessage.PASSWORD_RESET_SUCCESSFUL)
             generateTokenHeader(res, resource.email)
         else
-            res.sendError(400, result.messageg)
+            res.sendError(400, result.message)
 
     }
 
