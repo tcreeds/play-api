@@ -137,6 +137,15 @@ class UserService(
         amazonSES.sendEmail(request)
     }
 
+    fun deleteUser(resource: UserResource): ResultMessage {
+        val user = userRepository.findByEmail(resource.email)
+        if (user != null){
+            userRepository.delete(user)
+            return ResultMessage.DELETED_USER
+        }
+        return ResultMessage.USER_NOT_FOUND
+    }
+
     fun mockUser(name: String, password: String) {
         //repository.save(UserEntity(email = name, password = bCryptPasswordEncoder.encode(password), verified = true))
     }

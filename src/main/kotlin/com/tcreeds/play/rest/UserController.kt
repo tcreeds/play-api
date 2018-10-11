@@ -29,7 +29,10 @@ enum class ResultMessage(val message: String) {
     PASSWORD_RESET_EMAIL_FAILED("Password reset email failed to send"),
 
     PASSWORD_RESET_SUCCESSFUL("Password reset was successful"),
-    INVALID_PASSWORD_RESET_ATTEMPT("Invalid password reset request")
+    INVALID_PASSWORD_RESET_ATTEMPT("Invalid password reset request"),
+
+    DELETED_USER("Successfully deleted user"),
+    USER_NOT_FOUND("Unable to find user")
 
 }
 
@@ -82,6 +85,13 @@ class UserController(
         else
             res.sendError(400, result.message)
 
+    }
+
+    @PostMapping(value="/delete")
+    fun deleteUser(@Valid @RequestBody resource: UserResource, res: HttpServletResponse) {
+        val result = userService.deleteUser(resource)
+        if (result != ResultMessage.DELETED_USER)
+            res.sendError(500, result.message)
     }
 
     @PostMapping(value="/mockAccount")
