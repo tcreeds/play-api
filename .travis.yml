@@ -19,4 +19,4 @@ after_success:
   - docker build -t ${APP_NAME}:latest .
   - docker tag ${APP_NAME}:latest ${AWS_ECR_ACCOUNT}.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest
   - docker push ${AWS_ECR_ACCOUNT}.dkr.ecr.us-east-1.amazonaws.com/${APP_NAME}:latest
-  - aws ecs update-service --service play-api-nonprod --force-new-deployment
+  - aws ecs update-service --service play-api-nonprod --force-new-deployment --region us-east-1
