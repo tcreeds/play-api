@@ -5,6 +5,10 @@ language: java
 env:
   - APP_NAME=play-api AWS_ECR_ACCOUNT=175262026713
 
+cache:
+  directories:
+  - $HOME/.m2
+
 services:
   - docker
 
