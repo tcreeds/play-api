@@ -37,7 +37,8 @@ class UserService(
         val bCryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 ){
     fun createUser(resource: LoginResource): ResultMessage {
-        if (userRepository.findByEmail(resource.email) == null) {
+        val user = userRepository.findByEmail(resource.email)
+        if (user == null) {
             val unverifiedUser = unverifiedUserRepository.findByEmail(resource.email)
             val verificationId: String = UUID.randomUUID().toString()
             sendEmail(resource.email, "Play Account Verification", "https://play.tcreeds.io/verify/?email=${resource.email}&verificationId=$verificationId")
