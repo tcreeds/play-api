@@ -39,6 +39,11 @@ class CommunityController(
         return communityService.getCommunityWithMembers(id) ?: null
     }
 
+    @DeleteMapping(value="/{id}")
+    fun deleteCommunity(@PathVariable id: Long): Boolean {
+        return communityService.deleteCommunity(id)
+    }
+
     @PostMapping(value="/members/add")
     fun addMember(@Valid @RequestBody resource: CommunityMemberResource, res: HttpServletResponse){
         if (!communityService.addMember(resource.userId, resource.communityId))

@@ -33,6 +33,15 @@ class CommunityService(
         return savedEntity
     }
 
+    fun deleteCommunity(id: Long): Boolean {
+        val entity = communityRepository.findByCommunityId(id)
+        if (entity != null){
+            communityRepository.delete(entity)
+            return true
+        }
+        return false
+    }
+
     fun getCommunities() : List<CommunityResource> {
         return communityRepository.findAll().toList().map { CommunityResource.fromEntity(it) }
     }
