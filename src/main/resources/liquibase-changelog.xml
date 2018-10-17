@@ -84,4 +84,14 @@
     <changeSet author="trevorcreed (generated)" id="1537055810924-17">
         <addForeignKeyConstraint baseColumnNames="members_user_id" baseTableName="users_communities" constraintName="FK_9jaal9qoxpdu83f3wkef4gt1v" deferrable="false" initiallyDeferred="false" referencedColumnNames="user_id" referencedTableName="users"/>
     </changeSet>
+    <changeSet author="trevorcreed" id="1539750337607-1">
+        <addColumn tableName="users">
+            <column name="bio" type="TEXT"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="trevorcreed" id="1539750337607-2">
+        <addColumn tableName="users">
+            <column name="display_name" type="VARCHAR(255)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

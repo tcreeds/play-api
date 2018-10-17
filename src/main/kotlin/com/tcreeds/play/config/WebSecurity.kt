@@ -5,6 +5,7 @@ import com.tcreeds.play.rest.JWTAuthorizationFilter
 import com.tcreeds.play.rest.SecurityUtils.HEADER_STRING
 import com.tcreeds.play.rest.SecurityUtils.SIGN_UP_URL
 import com.tcreeds.play.rest.SecurityUtils.LOGIN_URL
+import com.tcreeds.play.rest.SecurityUtils.PROFILE_URL
 import com.tcreeds.play.rest.SecurityUtils.RESET_PASSWORD_URL
 import com.tcreeds.play.rest.SecurityUtils.SEND_RESET_URL
 import com.tcreeds.play.rest.SecurityUtils.VERIFY_URL

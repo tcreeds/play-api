@@ -1,15 +1,10 @@
 package com.tcreeds.play.rest
 
-import com.tcreeds.play.rest.resources.LoginResource
-import com.tcreeds.play.rest.resources.PasswordResetResource
-import com.tcreeds.play.rest.resources.UserResource
-import com.tcreeds.play.rest.resources.VerificationResource
+import com.tcreeds.play.rest.resources.*
 import com.tcreeds.play.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.security.core.Authentication
+import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
@@ -32,7 +27,8 @@ enum class ResultMessage(val message: String) {
     INVALID_PASSWORD_RESET_ATTEMPT("Invalid password reset request"),
 
     DELETED_USER("Successfully deleted user"),
-    USER_NOT_FOUND("Unable to find user")
+    USER_NOT_FOUND("Unable to find user"),
+    UPDATED_PROFILE("Successfully updated profile")
 
 }
 
@@ -62,12 +58,31 @@ class UserController(
     }
 
     @PostMapping(value="/login")
-    fun login(@Valid @RequestBody resource: LoginResource, res: HttpServletResponse){
+    fun login(@Valid @RequestBody resource: LoginResource, res: HttpServletResponse): UserResource? {
         val result = userService.checkLogin(resource)
-        if (result == ResultMessage.LOGIN_SUCCESS)
+        if (result == ResultMessage.LOGIN_SUCCESS) {
             generateTokenHeader(res, resource.email)
+            return userService.getUser(resource.email)
+        }
         else
             res.sendError(401, result.message)
+        return null
+    }
+
+    @GetMapping(value="/profile/{userId}")
+    fun getProfile(@PathVariable(required=true) userId: Long, res: HttpServletResponse): ProfileResource? {
+        val userProfile = userService.getProfile(userId)
+        if (userProfile != null)
+            return userProfile
+        res.sendError(404, "Unable to retrieve user id")
+        return null
+    }
+
+    @PostMapping(value="/profile")
+    fun updateProfile(auth: Authentication, @Valid @RequestBody resource: ProfileResource, res: HttpServletResponse){
+        val result = userService.updateProfile(resource, auth.name)
+        if (result != ResultMessage.UPDATED_PROFILE)
+            res.sendError(400, result.message)
     }
 
     @PostMapping(value="/generateresetcode")

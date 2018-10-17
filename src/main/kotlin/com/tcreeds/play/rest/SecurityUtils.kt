@@ -15,6 +15,7 @@ object SecurityUtils {
     const val VERIFY_URL = "/users/verifyemail"
     const val SEND_RESET_URL = "/users/generateresetcode"
     const val RESET_PASSWORD_URL = "/users/resetpassword"
+    const val PROFILE_URL = "/users/profile"
 
     fun generateToken(username: String): String{
         return Jwts.builder()

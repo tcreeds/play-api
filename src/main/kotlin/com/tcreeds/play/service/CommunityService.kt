@@ -76,13 +76,19 @@ class CommunityService(
                     id = entity.communityId,
                     name = entity.name,
                     description = entity.description,
-                    members = entity.members.map{ UserResource.fromEntity (it) })
+                    members = entity.members.map{ UserResource(
+                            id = it.userId,
+                            displayName = it.displayName
+                    )})
             return resource
         }
         return null
     }
 
     fun getCommunityMembers(communityId: Long): List<UserResource> {
-        return communityRepository.findByCommunityId(communityId)?.members?.map{ UserResource.fromEntity(it) }?.toList() ?: listOf()
+        return communityRepository.findByCommunityId(communityId)?.members?.map{ UserResource(
+                id = it.userId,
+                displayName = it.displayName
+        ) }?.toList() ?: listOf()
     }
 }

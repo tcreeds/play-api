@@ -16,10 +16,16 @@ data class UserEntity (
         @Column(unique = true)
         var email: String = "",
 
+        @Column(name="display_name")
+        var displayName: String? = "",
+
         @Column
         var password: String = "",
 
         @ManyToMany
-        var communities: MutableList<CommunityEntity> = mutableListOf()
+        var communities: MutableList<CommunityEntity> = mutableListOf(),
+
+        @Column(columnDefinition = "text")
+        var bio: String? = ""
 
 )

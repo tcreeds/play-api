@@ -9,10 +9,7 @@ import com.tcreeds.play.repository.entity.PasswordResetEntity
 import com.tcreeds.play.repository.entity.UnverifiedUserEntity
 import com.tcreeds.play.repository.entity.UserEntity
 import com.tcreeds.play.rest.ResultMessage
-import com.tcreeds.play.rest.resources.LoginResource
-import com.tcreeds.play.rest.resources.PasswordResetResource
-import com.tcreeds.play.rest.resources.UserResource
-import com.tcreeds.play.rest.resources.VerificationResource
+import com.tcreeds.play.rest.resources.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -62,6 +59,14 @@ class UserService(
         return ResultMessage.EMAIL_IN_USE
     }
 
+    fun getUser(email: String): UserResource? {
+        val user = userRepository.findByEmail(email)
+        return if (user != null) UserResource(
+                id = user.userId,
+                displayName = user.displayName ?: ""
+        ) else null
+    }
+
     @Transactional
     fun verifyUser(resource: VerificationResource): ResultMessage {
         val user = unverifiedUserRepository.findByVerificationId(resource.verificationId)
@@ -85,6 +90,28 @@ class UserService(
         if (userDataEntity != null && bCryptPasswordEncoder.matches(resource.password, userDataEntity.password))
             return ResultMessage.LOGIN_SUCCESS
         return ResultMessage.LOGIN_FAILED
+    }
+
+    fun getProfile(userId: Long): ProfileResource? {
+        val userDataEntity: UserEntity? = userRepository.findByUserId(userId)
+        if (userDataEntity != null){
+            return ProfileResource(
+                    username = userDataEntity.displayName ?: "",
+                    bio = userDataEntity.bio?: ""
+            )
+        }
+        return null
+    }
+
+    fun updateProfile(resource: ProfileResource, email: String): ResultMessage {
+        val userDataEntity: UserEntity? = userRepository.findByEmail(email)
+        if (userDataEntity != null){
+            userDataEntity.displayName = resource.username
+            userDataEntity.bio = resource.bio
+            userRepository.save(userDataEntity)
+            return ResultMessage.UPDATED_PROFILE
+        }
+        return ResultMessage.USER_NOT_FOUND
     }
 
     fun sendResetPasswordEmail(resource: UserResource): ResultMessage {
