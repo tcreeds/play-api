@@ -94,4 +94,8 @@
             <column name="display_name" type="VARCHAR(255)"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="trevorcreed" id="1539825008040-1">
+        <dropForeignKeyConstraint baseTableName="users_communities" constraintName="FK_3pspyqq34sw7qq3vakiwsabxy"></dropForeignKeyConstraint>
+        <addForeignKeyConstraint baseColumnNames="communities_community_id" baseTableName="users_communities" constraintName="FK_3pspyqq34sw7qq3vakiwsabxy" deferrable="false" initiallyDeferred="false" referencedColumnNames="community_id" onDelete="CASCADE" referencedTableName="communities"/>
+    </changeSet>
 </databaseChangeLog>
