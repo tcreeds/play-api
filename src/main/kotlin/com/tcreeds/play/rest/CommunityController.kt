@@ -44,9 +44,9 @@ class CommunityController(
         return communityService.deleteCommunity(id)
     }
 
-    @PostMapping(value="/members/add")
-    fun addMember(@Valid @RequestBody resource: CommunityMemberResource, res: HttpServletResponse){
-        if (!communityService.addMember(resource.userId, resource.communityId))
+    @PostMapping(value="/members/add/{id}")
+    fun addMember(authentication: Authentication, @PathVariable id: Long, res: HttpServletResponse){
+        if (!communityService.addMember(authentication.name, id))
             res.sendError(409)
     }
 
