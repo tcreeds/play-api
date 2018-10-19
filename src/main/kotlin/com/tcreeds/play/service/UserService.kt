@@ -85,11 +85,15 @@ class UserService(
         return ResultMessage.VERIFICATION_ID_NOT_FOUND
     }
 
-    fun checkLogin(resource: LoginResource): ResultMessage {
+    fun checkLogin(resource: LoginResource): UserResource? {
         val userDataEntity: UserEntity? = userRepository.findByEmail(resource.email)
         if (userDataEntity != null && bCryptPasswordEncoder.matches(resource.password, userDataEntity.password))
-            return ResultMessage.LOGIN_SUCCESS
-        return ResultMessage.LOGIN_FAILED
+            return UserResource(
+                    id = userDataEntity.userId,
+                    email = userDataEntity.email,
+                    displayName = userDataEntity.displayName
+            )
+        return null
     }
 
     fun getProfile(userId: Long): ProfileResource? {

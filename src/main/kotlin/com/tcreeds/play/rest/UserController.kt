@@ -26,9 +26,13 @@ enum class ResultMessage(val message: String) {
     PASSWORD_RESET_SUCCESSFUL("Password reset was successful"),
     INVALID_PASSWORD_RESET_ATTEMPT("Invalid password reset request"),
 
+    COMMUNITY_NOT_FOUND("Unable to find community"),
+
     DELETED_USER("Successfully deleted user"),
     USER_NOT_FOUND("Unable to find user"),
-    UPDATED_PROFILE("Successfully updated profile")
+    UPDATED_PROFILE("Successfully updated profile"),
+
+    SUCCESS("Success")
 
 }
 
@@ -60,12 +64,12 @@ class UserController(
     @PostMapping(value="/login")
     fun login(@Valid @RequestBody resource: LoginResource, res: HttpServletResponse): UserResource? {
         val result = userService.checkLogin(resource)
-        if (result == ResultMessage.LOGIN_SUCCESS) {
-            generateTokenHeader(res, resource.email)
-            return userService.getUser(resource.email)
+        if (result != null) {
+            generateTokenHeader(res, result.email)
+            return result
         }
         else
-            res.sendError(401, result.message)
+            res.sendError(401)
         return null
     }
 
