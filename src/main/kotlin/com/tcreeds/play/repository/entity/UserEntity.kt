@@ -23,6 +23,9 @@ data class UserEntity (
         var password: String = "",
 
         @ManyToMany
+        var adminCommunities: MutableList<CommunityEntity> = mutableListOf(),
+
+        @ManyToMany
         var communities: MutableList<CommunityEntity> = mutableListOf(),
 
         @Column(columnDefinition = "text")

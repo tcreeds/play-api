@@ -18,6 +18,8 @@ data class CommunityEntity (
         @Column
         var description: String = "",
 
+        @ManyToMany(mappedBy = "adminCommunities")
+        var admins: MutableList<UserEntity> = mutableListOf(),
 
         @ManyToMany(mappedBy = "communities")
         var members: MutableList<UserEntity> = mutableListOf()

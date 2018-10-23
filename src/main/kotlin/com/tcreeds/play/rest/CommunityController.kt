@@ -22,7 +22,7 @@ class CommunityController(
         print(authentication.name)
         val community = communityService.addCommunity(resource.name, resource.description, authentication.name)
         if (community != null) {
-            return CommunityResource.fromEntity(community)
+            return community
         }
         else
             res.sendError(409)

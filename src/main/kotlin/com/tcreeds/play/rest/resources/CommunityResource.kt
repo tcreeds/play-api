@@ -15,6 +15,9 @@ data class CommunityResource(
         val description: String = "",
 
         @JsonProperty
+        val admins: List<UserResource> = listOf(),
+
+        @JsonProperty
         val members: List<UserResource> = listOf()
 ) {
         companion object {

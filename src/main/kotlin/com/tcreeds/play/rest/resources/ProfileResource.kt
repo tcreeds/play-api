@@ -8,5 +8,8 @@ data class ProfileResource (
         val username: String,
 
         @JsonProperty
-        val bio: String
+        val bio: String,
+
+        @JsonProperty
+        val communities: List<CommunityResource>?
 )

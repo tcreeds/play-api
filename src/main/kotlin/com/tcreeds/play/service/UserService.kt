@@ -101,7 +101,14 @@ class UserService(
         if (userDataEntity != null){
             return ProfileResource(
                     username = userDataEntity.displayName ?: "",
-                    bio = userDataEntity.bio?: ""
+                    bio = userDataEntity.bio?: "",
+                    communities = userDataEntity.communities.map {
+                        CommunityResource(
+                                id = it.communityId,
+                                name = it.name,
+                                description = it.description
+                        )
+                    }
             )
         }
         return null

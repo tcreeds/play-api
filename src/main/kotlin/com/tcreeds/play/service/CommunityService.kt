@@ -22,15 +22,28 @@ class CommunityService(
         @Autowired
         val amazonSES: AmazonSimpleEmailService
 ){
-    fun addCommunity(name: String, description: String, email: String): CommunityEntity? {
-        val entity: CommunityEntity = CommunityEntity(name = name, description = description)
-        val savedEntity = communityRepository.save(entity)
+    fun addCommunity(name: String, description: String, email: String): CommunityResource? {
+        val entity = CommunityEntity(name = name, description = description)
         val user = userRepository.findByEmail(email)
+
         if (user != null){
-            user.communities.add(entity)
+
+            var savedEntity = communityRepository.save(entity)
+            entity.admins.add(user)
+            entity.members.add(user)
             userRepository.save(user)
+            savedEntity = communityRepository.save(entity)
+            println(savedEntity)
+
+            return CommunityResource(
+                    id = savedEntity.communityId,
+                    name = savedEntity.name,
+                    description = savedEntity.description,
+                    admins = savedEntity.admins.map{ UserResource(id = it.userId, displayName = it.displayName)},
+                    members = savedEntity.members.map{ UserResource(id = it.userId, displayName = it.displayName)}
+            )
         }
-        return savedEntity
+        throw Exception("Couldn't find user by email $email")
     }
 
     fun deleteCommunity(id: Long): Boolean {
@@ -81,10 +94,12 @@ class CommunityService(
     fun getCommunityWithMembers(communityId: Long): CommunityResource? {
         val entity = communityRepository.findByCommunityId(communityId)
         if (entity != null) {
+            println(entity)
             val resource = CommunityResource(
                     id = entity.communityId,
                     name = entity.name,
                     description = entity.description,
+                    admins = entity.admins.map{ UserResource(id = it.userId, displayName = it.displayName)},
                     members = entity.members.map{ UserResource(
                             id = it.userId,
                             displayName = it.displayName
