@@ -4,6 +4,7 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailService
 import com.tcreeds.play.repository.CommunityRepository
 import com.tcreeds.play.repository.UserRepository
 import com.tcreeds.play.repository.entity.CommunityEntity
+import com.tcreeds.play.repository.entity.CommunityMemberEntity
 import com.tcreeds.play.repository.entity.UserEntity
 import com.tcreeds.play.rest.resources.CommunityResource
 import com.tcreeds.play.rest.resources.UserResource
@@ -29,8 +30,11 @@ class CommunityService(
         if (user != null){
 
             var savedEntity = communityRepository.save(entity)
-            entity.admins.add(user)
-            entity.members.add(user)
+            entity.members.add(CommunityMemberEntity(
+                    id = CommunityMemberEntity.createEntityId(user, savedEntity),
+                    user = user,
+                    community = savedEntity,
+                    memberType = "Admin"))
             userRepository.save(user)
             savedEntity = communityRepository.save(entity)
             println(savedEntity)
@@ -39,8 +43,7 @@ class CommunityService(
                     id = savedEntity.communityId,
                     name = savedEntity.name,
                     description = savedEntity.description,
-                    admins = savedEntity.admins.map{ UserResource(id = it.userId, displayName = it.displayName)},
-                    members = savedEntity.members.map{ UserResource(id = it.userId, displayName = it.displayName)}
+                    members = savedEntity.members.map{ UserResource(id = it.user.userId, displayName = it.user.displayName)}
             )
         }
         throw Exception("Couldn't find user by email $email")
@@ -63,7 +66,11 @@ class CommunityService(
         val user: UserEntity? = userRepository.findByUserId(userId)
         val community: CommunityEntity? = communityRepository.findByCommunityId(communityId)
         if (user != null && community != null){
-            community.members.add(user)
+            community.members.add(CommunityMemberEntity(
+                    id = CommunityMemberEntity.createEntityId(user, community),
+                    user = user,
+                    community = community,
+                    memberType = "Member"))
             communityRepository.save(community)
             return true
         }
@@ -74,7 +81,11 @@ class CommunityService(
         val user: UserEntity? = userRepository.findByEmail(email)
         val community: CommunityEntity? = communityRepository.findByCommunityId(communityId)
         if (user != null && community != null){
-            community.members.add(user)
+            community.members.add(CommunityMemberEntity(
+                    id = CommunityMemberEntity.createEntityId(user, community),
+                    user = user,
+                    community = community,
+                    memberType = "Member"))
             communityRepository.save(community)
             return true
         }
@@ -84,7 +95,7 @@ class CommunityService(
     fun removeMember(userId: Long, communityId: Long): Boolean {
         val community: CommunityEntity? = communityRepository.findByCommunityId(communityId)
         if (community != null){
-            community.members = community.members.filter { it.userId != userId }.toMutableList()
+            community.members = community.members.filter { it.user.userId != userId }.toMutableList()
             communityRepository.save(community)
             return true
         }
@@ -99,10 +110,10 @@ class CommunityService(
                     id = entity.communityId,
                     name = entity.name,
                     description = entity.description,
-                    admins = entity.admins.map{ UserResource(id = it.userId, displayName = it.displayName)},
+                    admins = entity.members.map{ UserResource(id = it.user.userId, displayName = it.user.displayName)},
                     members = entity.members.map{ UserResource(
-                            id = it.userId,
-                            displayName = it.displayName
+                            id = it.user.userId,
+                            displayName = it.user.displayName
                     )})
             return resource
         }
@@ -111,8 +122,8 @@ class CommunityService(
 
     fun getCommunityMembers(communityId: Long): List<UserResource> {
         return communityRepository.findByCommunityId(communityId)?.members?.map{ UserResource(
-                id = it.userId,
-                displayName = it.displayName
+                id = it.user.userId,
+                displayName = it.user.displayName
         ) }?.toList() ?: listOf()
     }
 }

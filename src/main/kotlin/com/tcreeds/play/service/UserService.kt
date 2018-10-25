@@ -103,10 +103,11 @@ class UserService(
                     username = userDataEntity.displayName ?: "",
                     bio = userDataEntity.bio?: "",
                     communities = userDataEntity.communities.map {
+                        val community = it.community
                         CommunityResource(
-                                id = it.communityId,
-                                name = it.name,
-                                description = it.description
+                                id = community.communityId,
+                                name = community.name,
+                                description = community.description
                         )
                     }
             )

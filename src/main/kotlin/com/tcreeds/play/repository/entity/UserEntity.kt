@@ -22,11 +22,12 @@ data class UserEntity (
         @Column
         var password: String = "",
 
-        @ManyToMany
-        var adminCommunities: MutableList<CommunityEntity> = mutableListOf(),
-
-        @ManyToMany
-        var communities: MutableList<CommunityEntity> = mutableListOf(),
+        @OneToMany(
+                mappedBy = "community",
+                cascade = [CascadeType.ALL],
+                orphanRemoval = true
+        )
+        var communities: MutableList<CommunityMemberEntity> = mutableListOf(),
 
         @Column(columnDefinition = "text")
         var bio: String? = ""

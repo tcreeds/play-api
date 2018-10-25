@@ -114,30 +114,45 @@
     <changeSet author="trevorcreed (generated)" id="1539899540430-3">
         <addForeignKeyConstraint baseColumnNames="community_community_id" baseTableName="posts" constraintName="FK_95jlhxlvp043jxwxpme2ub4hi" deferrable="false" initiallyDeferred="false" referencedColumnNames="community_id" referencedTableName="communities"/>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1540252198173-1">
-        <createTable tableName="communities_admins">
-            <column name="communities_community_id" type="BIGINT">
+    <changeSet author="trevorcreed (generated)" id="1540252198173-2">
+        <addForeignKeyConstraint baseColumnNames="user_user_id" baseTableName="posts" constraintName="FK_d3qx1llpqo1i74n01k00eatwj" deferrable="false" initiallyDeferred="false" referencedColumnNames="user_id" referencedTableName="users"/>
+    </changeSet>
+
+    <!-- mapping table -->
+    <changeSet author="trevorcreed (generated)" id="1540430643687-1">
+        <createTable tableName="user_community">
+            <column name="community_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="admins_user_id" type="BIGINT">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="member_type" type="VARCHAR(255)"/>
+            <column name="community_community_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1540252198173-2">
-        <addForeignKeyConstraint baseColumnNames="user_user_id" baseTableName="posts" constraintName="FK_d3qx1llpqo1i74n01k00eatwj" deferrable="false" initiallyDeferred="false" referencedColumnNames="user_id" referencedTableName="users"/>
+    <changeSet author="trevorcreed (generated)" id="1540430643687-2">
+        <addPrimaryKey columnNames="community_id, user_id" constraintName="user_communityPK" tableName="user_community"/>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1540252198173-3">
-        <addForeignKeyConstraint baseColumnNames="communities_community_id" baseTableName="communities_admins" constraintName="FK_i073q5j62qlryp4a9u91vpfy1" deferrable="false" initiallyDeferred="false" referencedColumnNames="community_id" referencedTableName="communities"/>
+    <changeSet author="trevorcreed (generated)" id="1540430643687-3">
+        <addForeignKeyConstraint baseColumnNames="user_user_id" baseTableName="user_community" constraintName="FK_34m868yapdaesxxuvd4gyk0gb" deferrable="false" initiallyDeferred="false" referencedColumnNames="user_id" referencedTableName="users"/>
     </changeSet>
-    <changeSet author="trevorcreed (generated)" id="1540252198173-4">
-        <addForeignKeyConstraint baseColumnNames="admins_user_id" baseTableName="communities_admins" constraintName="FK_kb2jk6g395sgowllv5h9qor4i" deferrable="false" initiallyDeferred="false" referencedColumnNames="user_id" referencedTableName="users"/>
+    <changeSet author="trevorcreed (generated)" id="1540430643687-4">
+        <addForeignKeyConstraint baseColumnNames="community_community_id" baseTableName="user_community" constraintName="FK_s7drbfbgf5vnn0o0p2s89mkjh" deferrable="false" initiallyDeferred="false" referencedColumnNames="community_id" referencedTableName="communities"/>
     </changeSet>
-    <changeSet author="trevorcreed" id="1540252198173-5">
-        <dropColumn tableName="communities_admins" columnName="communities_community_id"></dropColumn>
-        <addColumn tableName="communities_admins">
-            <column name="community_entity_community_id" type="BIGINT"><constraints nullable="false" /></column>
-        </addColumn>
+    <changeSet author="trevorcreed (generated)" id="1540430643687-5">
+        <dropForeignKeyConstraint baseTableName="users_communities" constraintName="FK_3pspyqq34sw7qq3vakiwsabxy"/>
+    </changeSet>
+    <changeSet author="trevorcreed (generated)" id="1540430643687-6">
+        <dropForeignKeyConstraint baseTableName="users_communities" constraintName="FK_9jaal9qoxpdu83f3wkef4gt1v"/>
+    </changeSet>
+    <changeSet author="trevorcreed (generated)" id="1540430643687-7">
+        <dropTable tableName="users_communities"/>
     </changeSet>
 
 </databaseChangeLog>
