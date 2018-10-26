@@ -10,6 +10,7 @@ import com.tcreeds.play.repository.entity.UnverifiedUserEntity
 import com.tcreeds.play.repository.entity.UserEntity
 import com.tcreeds.play.rest.ResultMessage
 import com.tcreeds.play.rest.resources.*
+import com.tcreeds.play.service.email.EmailClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -29,7 +30,7 @@ class UserService(
         val passwordResetRepository: PasswordResetRepository,
 
         @Autowired
-        val amazonSES: AmazonSimpleEmailService,
+        val emailClient: EmailClient,
 
         val bCryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 ){
@@ -38,7 +39,8 @@ class UserService(
         if (user == null) {
             val unverifiedUser = unverifiedUserRepository.findByEmail(resource.email)
             val verificationId: String = UUID.randomUUID().toString()
-            sendEmail(resource.email, "Play Account Verification", "https://play.tcreeds.io/verify/?email=${resource.email}&verificationId=$verificationId")
+            println(verificationId)
+            emailClient.sendEmail(resource.email, "Play Account Verification", "https://play.tcreeds.io/verify/?email=${resource.email}&verificationId=$verificationId")
             if (unverifiedUser == null){
                 unverifiedUserRepository.save(UnverifiedUserEntity(
                         email = resource.email,
@@ -135,7 +137,7 @@ class UserService(
             }
 
             val resetId: String = UUID.randomUUID().toString()
-            sendEmail(resource.email, "Play Password Reset", "https://play.tcreeds.io/resetpassword/$resetId")
+            emailClient.sendEmail(resource.email, "Play Password Reset", "https://play.tcreeds.io/resetpassword/$resetId")
 
             val newResetEntity = PasswordResetEntity(
                     userId = userDataEntity.userId,
@@ -160,21 +162,6 @@ class UserService(
             }
         }
         return ResultMessage.INVALID_PASSWORD_RESET_ATTEMPT
-    }
-
-    fun sendEmail(destination: String, subject: String, body: String) {
-        val request: SendEmailRequest = SendEmailRequest()
-                .withDestination(Destination(listOf(destination)))
-                .withSource("no-reply@tcreeds.io")
-                .withMessage(Message()
-                        .withBody(Body()
-                                .withHtml(Content()
-                                        .withCharset("UTF-8").withData(body))
-                                .withText(Content()
-                                        .withCharset("UTF-8").withData(body)))
-                        .withSubject(Content()
-                                .withCharset("UTF-8").withData(subject)))
-        amazonSES.sendEmail(request)
     }
 
     fun deleteUser(resource: UserResource): ResultMessage {

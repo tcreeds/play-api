@@ -36,7 +36,7 @@ class CommunityService(
                     community = savedEntity,
                     memberType = "Admin"))
             userRepository.save(user)
-            savedEntity = communityRepository.save(entity)
+            savedEntity = communityRepository.save(savedEntity)
             println(savedEntity)
 
             return CommunityResource(
