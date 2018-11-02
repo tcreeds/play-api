@@ -152,4 +152,10 @@
     <changeSet author="trevorcreed (generated)" id="1540430643687-7">
         <dropTable tableName="users_communities"/>
     </changeSet>
+
+    <changeSet author = "trevorcreed" id="1541193216410-1">
+        <addColumn tableName="unverified_users">
+            <column name="display_name" type="TEXT" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

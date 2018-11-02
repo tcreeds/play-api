@@ -16,6 +16,9 @@ data class UnverifiedUserEntity (
         @Column(unique = true)
         var email: String,
 
+        @Column(name = "display_name")
+        var displayName: String,
+
         @Column(unique = true, name="verification_id")
         var verificationId: String,
 

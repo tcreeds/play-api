@@ -44,7 +44,7 @@ class UserController(
 ){
 
     @PostMapping(value="/newuser")
-    fun newUser(@Valid @RequestBody resource: LoginResource, res: HttpServletResponse) {
+    fun newUser(@Valid @RequestBody resource: CreateUserResource, res: HttpServletResponse) {
         val result = userService.createUser(resource)
         if (result != ResultMessage.EMAIL_IN_USE)
             generateTokenHeader(res, resource.email)

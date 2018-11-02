@@ -7,6 +7,7 @@ import com.tcreeds.play.repository.UserRepository
 import com.tcreeds.play.repository.entity.UnverifiedUserEntity
 import com.tcreeds.play.repository.entity.UserEntity
 import com.tcreeds.play.rest.ResultMessage
+import com.tcreeds.play.rest.resources.CreateUserResource
 import com.tcreeds.play.rest.resources.LoginResource
 import org.junit.Before
 import org.junit.Test
@@ -49,9 +50,9 @@ class UserServiceTest {
 
         every{ userRepository.findByEmail(allAny()) } returns null
         every{ unverifiedUserRepository.findByEmail(allAny()) } returns null
-        every{ unverifiedUserRepository.save<UnverifiedUserEntity>(allAny())} returns UnverifiedUserEntity(email="", verificationId = "", password = "")
+        every{ unverifiedUserRepository.save<UnverifiedUserEntity>(allAny())} returns UnverifiedUserEntity(email="", displayName = "test", verificationId = "", password = "")
 
-        val result = service.createUser(LoginResource(email = "test", password = "test"))
+        val result = service.createUser(CreateUserResource(email = "test", password = "test"))
 
         Assert.assertEquals(ResultMessage.SENT_VERIFICATION_EMAIL, result)
         verify(exactly = 1) { unverifiedUserRepository.save<UnverifiedUserEntity>(allAny()) }
@@ -62,7 +63,7 @@ class UserServiceTest {
 
         every{ userRepository.findByEmail(allAny()) } returns UserEntity()
 
-        val result = service.createUser(LoginResource(email = "test", password = "test"))
+        val result = service.createUser(CreateUserResource(email = "test", password = "test"))
 
         Assert.assertEquals(ResultMessage.EMAIL_IN_USE, result)
         verify(exactly = 0){ email.sendEmail(allAny()) }
@@ -73,10 +74,10 @@ class UserServiceTest {
     fun `should resend when user exists but is unverified`() {
 
         every{ userRepository.findByEmail(allAny()) } returns null
-        every{ unverifiedUserRepository.findByEmail(allAny()) } returns UnverifiedUserEntity(email="", verificationId = "", password = "")
-        every{ unverifiedUserRepository.save<UnverifiedUserEntity>(allAny())} returns UnverifiedUserEntity(email="", verificationId = "", password = "")
+        every{ unverifiedUserRepository.findByEmail(allAny()) } returns UnverifiedUserEntity(email="", displayName = "test", verificationId = "", password = "")
+        every{ unverifiedUserRepository.save<UnverifiedUserEntity>(allAny())} returns UnverifiedUserEntity(email="", displayName = "test", verificationId = "", password = "")
 
-        val result = service.createUser(LoginResource(email = "test", password = "test"))
+        val result = service.createUser(CreateUserResource(email = "test", password = "test"))
 
         Assert.assertEquals(ResultMessage.RESEND_VERIFICATION_EMAIL, result)
         verify(exactly = 1){ unverifiedUserRepository.save<UnverifiedUserEntity>(allAny()) }

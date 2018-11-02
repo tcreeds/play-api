@@ -34,7 +34,7 @@ class UserService(
 
         val bCryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 ){
-    fun createUser(resource: LoginResource): ResultMessage {
+    fun createUser(resource: CreateUserResource): ResultMessage {
         val user = userRepository.findByEmail(resource.email)
         if (user == null) {
             val unverifiedUser = unverifiedUserRepository.findByEmail(resource.email)
@@ -44,6 +44,7 @@ class UserService(
             if (unverifiedUser == null){
                 unverifiedUserRepository.save(UnverifiedUserEntity(
                         email = resource.email,
+                        displayName = resource.displayName,
                         password = bCryptPasswordEncoder.encode(resource.password),
                         verificationId = verificationId))
                 return ResultMessage.SENT_VERIFICATION_EMAIL
@@ -52,6 +53,7 @@ class UserService(
                 unverifiedUserRepository.save(UnverifiedUserEntity(
                         userId = unverifiedUser.userId,
                         email = unverifiedUser.email,
+                        displayName = unverifiedUser.displayName,
                         password = bCryptPasswordEncoder.encode(unverifiedUser.password),
                         verificationId = verificationId))
                 return ResultMessage.RESEND_VERIFICATION_EMAIL
@@ -76,6 +78,7 @@ class UserService(
             if (user.email == resource.email){
                 val verifiedUser = UserEntity(
                         email = user.email,
+                        displayName = user.displayName,
                         password = user.password
                 )
                 userRepository.save(verifiedUser)
