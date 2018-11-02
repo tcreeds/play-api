@@ -19,7 +19,7 @@ data class CommunityEntity (
         var description: String = "",
 
         @OneToMany(
-                mappedBy = "user",
+                mappedBy = "community",
                 cascade = [CascadeType.ALL],
                 orphanRemoval = true
         )

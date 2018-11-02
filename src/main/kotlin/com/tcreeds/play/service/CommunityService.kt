@@ -5,11 +5,13 @@ import com.tcreeds.play.repository.CommunityRepository
 import com.tcreeds.play.repository.UserRepository
 import com.tcreeds.play.repository.entity.CommunityEntity
 import com.tcreeds.play.repository.entity.CommunityMemberEntity
+import com.tcreeds.play.repository.entity.CommunityMemberEntityId
 import com.tcreeds.play.repository.entity.UserEntity
 import com.tcreeds.play.rest.resources.CommunityResource
 import com.tcreeds.play.rest.resources.UserResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CommunityService(
@@ -23,21 +25,23 @@ class CommunityService(
         @Autowired
         val amazonSES: AmazonSimpleEmailService
 ){
+    @Transactional
     fun addCommunity(name: String, description: String, email: String): CommunityResource? {
         val entity = CommunityEntity(name = name, description = description)
         val user = userRepository.findByEmail(email)
 
         if (user != null){
-
             var savedEntity = communityRepository.save(entity)
-            entity.members.add(CommunityMemberEntity(
+            val communityMember = CommunityMemberEntity(
                     id = CommunityMemberEntity.createEntityId(user, savedEntity),
                     user = user,
                     community = savedEntity,
-                    memberType = "Admin"))
+                    memberType = "Admin")
+
+            savedEntity.members.add(communityMember)
+            user.communities.add(communityMember)
+            communityRepository.save(savedEntity)
             userRepository.save(user)
-            savedEntity = communityRepository.save(savedEntity)
-            println(savedEntity)
 
             return CommunityResource(
                     id = savedEntity.communityId,
@@ -77,16 +81,19 @@ class CommunityService(
         return false
     }
 
+    @Transactional
     fun addMember(email: String, communityId: Long): Boolean {
         val user: UserEntity? = userRepository.findByEmail(email)
         val community: CommunityEntity? = communityRepository.findByCommunityId(communityId)
         if (user != null && community != null){
-            community.members.add(CommunityMemberEntity(
-                    id = CommunityMemberEntity.createEntityId(user, community),
+            val memberEntity = CommunityMemberEntity(
+                    id = CommunityMemberEntityId(userId = user.userId, communityId = community.communityId),
                     user = user,
                     community = community,
-                    memberType = "Member"))
+                    memberType = "Member")
+            community.members.add(memberEntity)
             communityRepository.save(community)
+
             return true
         }
         return false
@@ -105,7 +112,6 @@ class CommunityService(
     fun getCommunityWithMembers(communityId: Long): CommunityResource? {
         val entity = communityRepository.findByCommunityId(communityId)
         if (entity != null) {
-            println(entity)
             val resource = CommunityResource(
                     id = entity.communityId,
                     name = entity.name,

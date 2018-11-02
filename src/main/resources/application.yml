@@ -20,6 +20,10 @@ spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false
 security.basic.enabled: false
 management.security.enabled: false
 
+logging.level.org.hibernate:
+  SQL: DEBUG
+  type.descriptor.sql.BasicBinder: TRACE
+
 #spring.jpa.properties.hibernate.physical_naming_strategy: com.tcreeds.play.config.FunctionalNaming
 #spring.jpa.properties.hibernate.implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
 

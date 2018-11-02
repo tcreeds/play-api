@@ -23,7 +23,7 @@ data class UserEntity (
         var password: String = "",
 
         @OneToMany(
-                mappedBy = "community",
+                mappedBy = "user",
                 cascade = [CascadeType.ALL],
                 orphanRemoval = true
         )

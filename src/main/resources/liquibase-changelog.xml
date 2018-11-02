@@ -129,10 +129,8 @@
             </column>
             <column name="member_type" type="VARCHAR(255)"/>
             <column name="community_community_id" type="BIGINT">
-                <constraints nullable="false"/>
             </column>
             <column name="user_user_id" type="BIGINT">
-                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
@@ -154,5 +152,4 @@
     <changeSet author="trevorcreed (generated)" id="1540430643687-7">
         <dropTable tableName="users_communities"/>
     </changeSet>
-
 </databaseChangeLog>

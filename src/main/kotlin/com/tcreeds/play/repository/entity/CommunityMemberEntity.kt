@@ -8,17 +8,21 @@ data class CommunityMemberEntity(
         @EmbeddedId
         var id: CommunityMemberEntityId,
 
-        @ManyToOne(fetch = FetchType.LAZY)
         @MapsId("user_id")
+        @ManyToOne(fetch = FetchType.LAZY)
         var user: UserEntity,
 
-        @ManyToOne(fetch = FetchType.LAZY)
         @MapsId("community_id")
+        @ManyToOne(fetch = FetchType.LAZY)
         var community: CommunityEntity,
 
         @Column(name = "member_type")
         var memberType: String
 ) {
+    override fun toString(): String {
+        return ("CommunityMemberEntity(id=$id, user=${user.userId}, community=${community.communityId}, memberType=$memberType)")
+    }
+
     companion object {
 
         fun createEntityId(user: UserEntity, community: CommunityEntity): CommunityMemberEntityId{
