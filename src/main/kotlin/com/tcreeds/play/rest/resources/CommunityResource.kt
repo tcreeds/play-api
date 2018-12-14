@@ -6,7 +6,7 @@ import com.tcreeds.play.repository.entity.CommunityEntity
 data class CommunityResource(
 
         @JsonProperty
-        val id: Long = 0,
+        val id: String = "",
 
         @JsonProperty
         val name: String = "",
@@ -22,7 +22,7 @@ data class CommunityResource(
 ) {
         companion object {
             fun fromEntity(entity: CommunityEntity): CommunityResource {
-                return CommunityResource(id = entity.communityId, name = entity.name, description = entity.description)
+                return CommunityResource()//id = entity.communityId, name = entity.name, description = entity.description)
             }
         }
 }

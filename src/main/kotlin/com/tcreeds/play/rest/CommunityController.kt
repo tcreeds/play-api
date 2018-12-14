@@ -35,7 +35,7 @@ class CommunityController(
     }
 
     @GetMapping(value="/{id}")
-    fun getCommunityWithMembers(@PathVariable id: Long): CommunityResource? {
+    fun getCommunityWithMembers(@PathVariable id: String): CommunityResource? {
         return communityService.getCommunityWithMembers(id) ?: null
     }
 
@@ -45,7 +45,7 @@ class CommunityController(
     }
 
     @PostMapping(value="/members/add/{id}")
-    fun addMember(authentication: Authentication, @PathVariable id: Long, res: HttpServletResponse){
+    fun addMember(authentication: Authentication, @PathVariable id: String, res: HttpServletResponse){
         if (!communityService.addMember(authentication.name, id))
             res.sendError(409)
     }

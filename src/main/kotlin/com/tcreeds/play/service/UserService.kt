@@ -1,7 +1,6 @@
 package com.tcreeds.play.service
 
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailService
-import com.amazonaws.services.simpleemail.model.*
+import com.tcreeds.play.repository.GraphClient
 import com.tcreeds.play.repository.PasswordResetRepository
 import com.tcreeds.play.repository.UserRepository
 import com.tcreeds.play.repository.UnverifiedUserRepository
@@ -31,6 +30,9 @@ class UserService(
 
         @Autowired
         val emailClient: EmailClient,
+
+        @Autowired
+        val graphClient: GraphClient,
 
         val bCryptPasswordEncoder: BCryptPasswordEncoder = BCryptPasswordEncoder()
 ){
@@ -63,25 +65,27 @@ class UserService(
         return ResultMessage.EMAIL_IN_USE
     }
 
-    fun getUser(email: String): UserResource? {
+    /*fun getUser(email: String): UserResource? {
         val user = userRepository.findByEmail(email)
         return if (user != null) UserResource(
                 id = user.userId,
                 displayName = user.displayName ?: ""
         ) else null
-    }
+    }*/
 
     @Transactional
     fun verifyUser(resource: VerificationResource): ResultMessage {
         val user = unverifiedUserRepository.findByVerificationId(resource.verificationId)
         if (user != null){
             if (user.email == resource.email){
+                val id = UUID.randomUUID().toString()
                 val verifiedUser = UserEntity(
+                        userId = id,
                         email = user.email,
-                        displayName = user.displayName,
                         password = user.password
                 )
                 userRepository.save(verifiedUser)
+                graphClient.insertUser(id = verifiedUser.userId, displayName = user.displayName, email = verifiedUser.email)
                 unverifiedUserRepository.deleteById(user.userId)
                 return ResultMessage.VERIFIED_USER
             }
@@ -92,36 +96,23 @@ class UserService(
 
     fun checkLogin(resource: LoginResource): UserResource? {
         val userDataEntity: UserEntity? = userRepository.findByEmail(resource.email)
-        if (userDataEntity != null && bCryptPasswordEncoder.matches(resource.password, userDataEntity.password))
+        if (userDataEntity != null && bCryptPasswordEncoder.matches(resource.password, userDataEntity.password)) {
+            val user = graphClient.getUser(userDataEntity.userId)
             return UserResource(
-                    id = userDataEntity.userId,
-                    email = userDataEntity.email,
-                    displayName = userDataEntity.displayName
-            )
-        return null
-    }
-
-    fun getProfile(userId: Long): ProfileResource? {
-        val userDataEntity: UserEntity? = userRepository.findByUserId(userId)
-        if (userDataEntity != null){
-            return ProfileResource(
-                    username = userDataEntity.displayName ?: "",
-                    bio = userDataEntity.bio?: "",
-                    communities = userDataEntity.communities.map {
-                        val community = it.community
-                        CommunityResource(
-                                id = community.communityId,
-                                name = community.name,
-                                description = community.description
-                        )
-                    }
+                    id = user.id,
+                    email = user.email,
+                    displayName = user.displayName
             )
         }
         return null
     }
 
-    fun updateProfile(resource: ProfileResource, email: String): ResultMessage {
-        val userDataEntity: UserEntity? = userRepository.findByEmail(email)
+    fun getProfile(userId: String): ProfileResource? {
+        return graphClient.getUserProfile(userId)
+    }
+
+    fun updateProfile(resource: ProfileResource, userId: String): ResultMessage {
+        val userDataEntity: UserEntity? = userRepository.findByUserId(userId = userId)
         if (userDataEntity != null){
             userDataEntity.displayName = resource.username
             userDataEntity.bio = resource.bio

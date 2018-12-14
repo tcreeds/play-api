@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PasswordResetRepository : CrudRepository<PasswordResetEntity, Long> {
+interface PasswordResetRepository : CrudRepository<PasswordResetEntity, String> {
     fun findByResetId(verificationId: String): PasswordResetEntity?
     fun findByEmail(email: String): PasswordResetEntity?
 }

@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface CommunityRepository : CrudRepository<CommunityEntity, Long> {
-    fun findByCommunityId(id: Long): CommunityEntity?
+interface CommunityRepository : CrudRepository<CommunityEntity, String> {
+    fun findByCommunityId(id: String): CommunityEntity?
 }

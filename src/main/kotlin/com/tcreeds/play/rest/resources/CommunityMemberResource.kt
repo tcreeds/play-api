@@ -6,8 +6,8 @@ import javax.validation.constraints.NotBlank
 data class CommunityMemberResource(
 
         @JsonProperty
-        val userId: Long,
+        val userId: String,
 
         @JsonProperty
-        val communityId: Long
+        val communityId: String
 )

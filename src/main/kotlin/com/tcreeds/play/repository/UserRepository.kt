@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRepository : CrudRepository<UserEntity, Long> {
+interface UserRepository : CrudRepository<UserEntity, String> {
     fun findByEmail(email: String): UserEntity?
-    fun findByUserId(userId: Long): UserEntity?
+    fun findByUserId(userId: String): UserEntity?
 }

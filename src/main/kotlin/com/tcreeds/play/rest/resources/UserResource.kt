@@ -6,7 +6,7 @@ import com.tcreeds.play.repository.entity.UserEntity
 data class UserResource(
 
         @JsonProperty
-        val id: Long = 0,
+        val id: String = "",
 
         @JsonProperty
         val email: String = "",

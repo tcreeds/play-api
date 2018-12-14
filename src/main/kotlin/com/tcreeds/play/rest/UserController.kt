@@ -74,7 +74,7 @@ class UserController(
     }
 
     @GetMapping(value="/profile/{userId}")
-    fun getProfile(@PathVariable(required=true) userId: Long, res: HttpServletResponse): ProfileResource? {
+    fun getProfile(@PathVariable(required=true) userId: String, res: HttpServletResponse): ProfileResource? {
         val userProfile = userService.getProfile(userId)
         if (userProfile != null)
             return userProfile

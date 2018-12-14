@@ -11,7 +11,7 @@ data class UserEntity (
         @Id
         @GeneratedValue(strategy = GenerationType.SEQUENCE)
         @Column(name="user_id")
-        var userId: Long = 0,
+        var userId: String = "",
 
         @Column(unique = true)
         var email: String = "",

@@ -2,6 +2,7 @@ package com.tcreeds.play.service
 
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService
 import com.tcreeds.play.repository.CommunityRepository
+import com.tcreeds.play.repository.GraphClient
 import com.tcreeds.play.repository.UserRepository
 import com.tcreeds.play.repository.entity.CommunityEntity
 import com.tcreeds.play.repository.entity.CommunityMemberEntity
@@ -12,6 +13,7 @@ import com.tcreeds.play.rest.resources.UserResource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class CommunityService(
@@ -23,33 +25,22 @@ class CommunityService(
         val userRepository: UserRepository,
 
         @Autowired
-        val amazonSES: AmazonSimpleEmailService
+        val graphClient: GraphClient
 ){
     @Transactional
-    fun addCommunity(name: String, description: String, email: String): CommunityResource? {
+    fun addCommunity(name: String, description: String, userId: String): CommunityResource? {
         val entity = CommunityEntity(name = name, description = description)
-        val user = userRepository.findByEmail(email)
 
-        if (user != null){
-            var savedEntity = communityRepository.save(entity)
-            val communityMember = CommunityMemberEntity(
-                    id = CommunityMemberEntity.createEntityId(user, savedEntity),
-                    user = user,
-                    community = savedEntity,
-                    memberType = "Admin")
+        val id = UUID.randomUUID().toString()
+        graphClient.insertCommunity(id, name, description)
+        graphClient.addUserToCommunity(userId, id)
 
-            savedEntity.members.add(communityMember)
-            user.communities.add(communityMember)
-            communityRepository.save(savedEntity)
-            userRepository.save(user)
-
-            return CommunityResource(
-                    id = savedEntity.communityId,
-                    name = savedEntity.name,
-                    description = savedEntity.description,
-                    members = savedEntity.members.map{ UserResource(id = it.user.userId, displayName = it.user.displayName)}
-            )
-        }
+        return CommunityResource(
+                id = savedEntity.communityId,
+                name = savedEntity.name,
+                description = savedEntity.description,
+                members = savedEntity.members.map{ UserResource(id = it.user.userId, displayName = it.user.displayName)}
+        )
         throw Exception("Couldn't find user by email $email")
     }
 
